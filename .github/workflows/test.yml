@@ -38,17 +38,6 @@ jobs:
       - name: Test
         run: make test
 
-  test:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v6
-
-      - name: Install jq
-        run: sudo apt-get install -y jq
-
-      - name: Run tests
-        run: make test
-
   validate:
     runs-on: ubuntu-latest
     steps:
