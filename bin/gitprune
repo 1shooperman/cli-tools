@@ -1,5 +1,6 @@
 #!/bin/bash
 # shellcheck source=lib/gitcmds.sh
-source "$(dirname "${BASH_SOURCE[0]}")/../lib/gitcmds.sh"
+_src="${BASH_SOURCE[0]}"; while [ -L "$_src" ]; do _src="$(readlink "$_src")"; done
+source "$(dirname "$_src")/../lib/gitcmds.sh"
 
 gitprune "$1"
