@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
-GREEN='\e[32m'
-GREY='\e[2m'
-RESET='\e[0m'
+GREEN='\033[32m'
+GREY='\033[2m'
+RESET='\033[0m'
 
 gecho() { printf "${GREEN}%s${RESET}\n" "$*"; }
 
@@ -26,7 +26,7 @@ gitprune() {
     { git gc --prune=now && git fetch -p; } 2>&1 | show_progress
     gecho "Running garbage collection"
     git gc 2>&1 | show_progress
-    gecho "Pruned and cleaned."
+    gecho "[DONE] Pruned and cleaned."
 }
 
 gitrefresh() {
