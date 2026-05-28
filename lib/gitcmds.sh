@@ -1,31 +1,40 @@
 #!/usr/bin/env bash
-gitprune () {
-    echo "Pruning local git branches"
+
+GREEN='\e[32m'
+GREY='\e[2m'
+RESET='\e[0m'
+
+gecho() { printf "${GREEN}%s${RESET}\n" "$*"; }
+
+show_progress() {
+    while IFS= read -r line; do
+        printf "\r${GREY}%-120s${RESET}" "${line:0:120}"
+    done
+    printf "\r%-120s\r" ""
+}
+
+gitprune() {
+    gecho "Pruning local git branches"
 
     if [[ "$1" == "--force" ]]; then
-        echo "Force deleting unmerged branches"
+        gecho "Force deleting unmerged branches"
         git branch -r | awk '{print $1}' | grep -Ev -f /dev/fd/0 <(git branch -vv | grep origin) | awk '{print $1}' | xargs -r git branch -D
     else
         git branch -r | awk '{print $1}' | grep -Ev -f /dev/fd/0 <(git branch -vv | grep origin) | awk '{print $1}' | xargs -r git branch -d
     fi
 
-    git gc --prune=now
-    git fetch -p
-    echo "Pruning complete. Running garbage collection"
-    git gc
-    echo "Pruned and Cleaned."
+    { git gc --prune=now && git fetch -p; } 2>&1 | show_progress
+    gecho "Running garbage collection"
+    git gc 2>&1 | show_progress
+    gecho "Pruned and cleaned."
 }
 
-gitrefresh () {
-	echo "Refreshing local clone."
-	if [[ "$1" != "" ]]
-	then
-		git checkout "$1"
-	else
-		git checkout main
-	fi
-	git fetch origin
-	git pull
-	gitprune --force
-	gitprune --force
+gitrefresh() {
+    local branch="${1:-main}"
+    gecho "Refreshing local clone → $branch"
+    git checkout "$branch" 2>&1 | show_progress
+    git fetch origin 2>&1 | show_progress
+    git pull 2>&1 | show_progress
+    gitprune --force > /dev/null 2>&1
+    gitprune --force
 }
