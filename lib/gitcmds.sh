@@ -4,9 +4,9 @@ gitprune () {
 
     if [[ "$1" == "--force" ]]; then
         echo "Force deleting unmerged branches"
-        git branch -r | awk '{print $1}' | egrep -v -f /dev/fd/0 <(git branch -vv | grep origin) | awk '{print $1}' | xargs -r git branch -D
+        git branch -r | awk '{print $1}' | grep -Ev -f /dev/fd/0 <(git branch -vv | grep origin) | awk '{print $1}' | xargs -r git branch -D
     else
-        git branch -r | awk '{print $1}' | egrep -v -f /dev/fd/0 <(git branch -vv | grep origin) | awk '{print $1}' | xargs -r git branch -d
+        git branch -r | awk '{print $1}' | grep -Ev -f /dev/fd/0 <(git branch -vv | grep origin) | awk '{print $1}' | xargs -r git branch -d
     fi
 
     git gc --prune=now
@@ -20,7 +20,7 @@ gitrefresh () {
 	echo "Refreshing local clone."
 	if [[ "$1" != "" ]]
 	then
-		git checkout $1
+		git checkout "$1"
 	else
 		git checkout main
 	fi

@@ -1,6 +1,6 @@
 # cli-tools
 
-Personal shell utilities for git branch hygiene and GPG cache warming.
+Personal shell utilities for git branch hygiene, GPG cache warming, and Claude plugin static analysis.
 
 ## Installation
 
@@ -43,6 +43,22 @@ Warms the GPG agent cache by performing a throwaway clearsign. Useful to pre-unl
 cache-gpg
 ```
 
+### `sast`
+
+Static analysis for Claude plugin markdown files. Scans `plugins/` for risky `allowed-tools` declarations in YAML frontmatter.
+
+| Severity | Check |
+|----------|-------|
+| ERROR | Bare `Bash` or `Bash(*)` — unrestricted shell access |
+| ERROR | Wildcard `[*]`, `Agent(*)`, or `Skill(*)` — all tools granted |
+| WARN | Bare `WebFetch` — any domain fetchable |
+
+```sh
+sast
+```
+
+Exits non-zero if any ERROR findings are found.
+
 ## Structure
 
 ```
@@ -50,6 +66,7 @@ bin/
   cache-gpg     # warms GPG agent cache
   gitprune      # wrapper for gitprune()
   gitrefresh    # wrapper for gitrefresh()
+  sast          # static analysis for claude plugin frontmatter
 lib/
   gitcmds.sh    # shared function definitions
 ```
