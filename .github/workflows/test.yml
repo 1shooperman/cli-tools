@@ -1,0 +1,39 @@
+name: Tests
+
+on:
+  workflow_call:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+    paths:
+      - '.claude-plugin/**'
+      - 'plugins/slack-publish/**'
+
+permissions:
+  contents: read
+
+jobs:
+  shell-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Install shellcheck
+        run: sudo apt-get install -y shellcheck
+
+      - name: Lint
+        run: make lint
+
+  shell-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Install bats
+        run: sudo apt-get install -y bats
+
+      - name: Test
+        run: make test

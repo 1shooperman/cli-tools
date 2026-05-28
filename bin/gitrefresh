@@ -1,5 +1,5 @@
 #!/bin/bash
+# shellcheck source=lib/gitcmds.sh
+source "$(dirname "${BASH_SOURCE[0]}")/../lib/gitcmds.sh"
 
-source ../lib/gitcmds.sh
-
-gitrefresh $1
+gitrefresh "$1"
