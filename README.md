@@ -1,6 +1,6 @@
 # cli-tools
 
-Personal shell utilities for git branch hygiene.
+Personal shell utilities for git branch hygiene and GPG cache warming.
 
 ## Installation
 
@@ -35,10 +35,19 @@ gitrefresh        # resets to main
 gitrefresh dev    # resets to dev
 ```
 
+### `cache-gpg`
+
+Warms the GPG agent cache by performing a throwaway clearsign. Useful to pre-unlock the key before a commit flow that requires signing.
+
+```sh
+cache-gpg
+```
+
 ## Structure
 
 ```
 bin/
+  cache-gpg     # warms GPG agent cache
   gitprune      # wrapper for gitprune()
   gitrefresh    # wrapper for gitrefresh()
 lib/
