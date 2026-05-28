@@ -2,7 +2,7 @@
 set -euo pipefail
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-PLUGINS_DIR="$REPO_ROOT/plugins"
+PLUGINS_DIR="${1:-$REPO_ROOT/plugins}"
 
 FINDINGS=0
 EXIT_CODE=0
