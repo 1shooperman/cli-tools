@@ -4,6 +4,15 @@ Personal shell utilities for git branch hygiene, GPG cache warming, and Claude p
 
 ## Installation
 
+### Homebrew (recommended)
+
+```sh
+brew tap 1shooperman/tap
+brew install cli-tools
+```
+
+### Manual
+
 Add `bin/` to your `$PATH`:
 
 ```sh
