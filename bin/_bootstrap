@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+_src="${BASH_SOURCE[0]}"
+while [ -L "$_src" ]; do
+  _dir="$(cd -P "$(dirname "$_src")" && pwd)"
+  _src="$(readlink "$_src")"
+  [[ "$_src" != /* ]] && _src="$_dir/$_src"
+done
+CLI_TOOL_ROOT="$(cd -P "$(dirname "$_src")/.." && pwd)"
+export CLI_TOOL_ROOT
+unset _src _dir

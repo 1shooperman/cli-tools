@@ -4,13 +4,16 @@ setup() {
   TMPDIR="$(mktemp -d)"
   mkdir -p "$TMPDIR/bin" "$TMPDIR/plugins/pkg"
   cp "$BATS_TEST_DIRNAME/../bin/sast" "$TMPDIR/bin/sast"
-  chmod +x "$TMPDIR/bin/sast"
+  cp "$BATS_TEST_DIRNAME/../bin/_bootstrap" "$TMPDIR/bin/_bootstrap"
+  chmod +x "$TMPDIR/bin/sast" "$TMPDIR/bin/_bootstrap"
   SAST="$TMPDIR/bin/sast"
 }
 
 teardown() {
   rm -rf "$TMPDIR"
 }
+
+sast() { bash -c "cd '$TMPDIR' && '$SAST' \"\$@\"" -- "$@"; }
 
 write_md() {
   cat > "$TMPDIR/plugins/pkg/agent.md"
@@ -23,7 +26,7 @@ allowed-tools: [Bash(echo hello), WebFetch(https://example.com)]
 ---
 body
 EOF
-  run "$SAST"
+  run sast
   [ "$status" -eq 0 ]
   [[ "$output" == *"Findings: 0"* ]]
 }
@@ -34,7 +37,7 @@ EOF
 allowed-tools: [Bash, Read]
 ---
 EOF
-  run "$SAST"
+  run sast
   [ "$status" -eq 1 ]
   [[ "$output" == *"[ERROR]"* ]]
   [[ "$output" == *"bare 'Bash'"* ]]
@@ -46,7 +49,7 @@ EOF
 allowed-tools: [Bash(*), Read]
 ---
 EOF
-  run "$SAST"
+  run sast
   [ "$status" -eq 1 ]
   [[ "$output" == *"Bash(*) is effectively unrestricted"* ]]
 }
@@ -57,7 +60,7 @@ EOF
 allowed-tools: [WebFetch, Read]
 ---
 EOF
-  run "$SAST"
+  run sast
   [ "$status" -eq 0 ]
   [[ "$output" == *"[WARN]"* ]]
   [[ "$output" == *"bare 'WebFetch'"* ]]
@@ -69,7 +72,7 @@ EOF
 allowed-tools: [*]
 ---
 EOF
-  run "$SAST"
+  run sast
   [ "$status" -eq 1 ]
   [[ "$output" == *"wildcard '*'"* ]]
 }
@@ -80,7 +83,7 @@ EOF
 allowed-tools: [Bash(git status), Read]
 ---
 EOF
-  run "$SAST"
+  run sast
   [ "$status" -eq 0 ]
   [[ "$output" == *"Findings: 0"* ]]
 }
@@ -91,7 +94,7 @@ EOF
 allowed-tools: [WebFetch(https://api.example.com), Read]
 ---
 EOF
-  run "$SAST"
+  run sast
   [ "$status" -eq 0 ]
   [[ "$output" == *"Findings: 0"* ]]
 }
@@ -103,14 +106,14 @@ name: safe
 ---
 body text with allowed-tools: [Bash, *]
 EOF
-  run "$SAST"
+  run sast
   [ "$status" -eq 0 ]
   [[ "$output" == *"Findings: 0"* ]]
 }
 
 @test "no plugins dir: exits 0 with no findings" {
   rm -rf "$TMPDIR/plugins"
-  run "$SAST"
+  run sast
   [ "$status" -eq 0 ]
   [[ "$output" == *"Findings: 0"* ]]
 }
@@ -121,7 +124,7 @@ EOF
 allowed-tools: [Bash, WebFetch]
 ---
 EOF
-  run "$SAST"
+  run sast
   [ "$status" -eq 1 ]
   [[ "$output" == *"Findings: 2"* ]]
 }
