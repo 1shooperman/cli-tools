@@ -22,6 +22,7 @@ EOF
 
   export PATH="$MOCK_BIN:$PATH"
   export GIT_LOG
+  export CLI_TOOL_ROOT="$(cd "$BATS_TEST_DIRNAME/.." && pwd)"
 
   # shellcheck source=../lib/gitcmds.sh
   source "$LIB"

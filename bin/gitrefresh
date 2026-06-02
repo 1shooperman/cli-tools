@@ -1,11 +1,7 @@
 #!/bin/bash
+# shellcheck source=bin/_bootstrap
+source "${BASH_SOURCE[0]%/*}/_bootstrap"
 # shellcheck source=lib/gitcmds.sh
-_src="${BASH_SOURCE[0]}"
-while [ -L "$_src" ]; do
-  _dir="$(cd -P "$(dirname "$_src")" && pwd)"
-  _src="$(readlink "$_src")"
-  [[ "$_src" != /* ]] && _src="$_dir/$_src"
-done
-source "$(cd -P "$(dirname "$_src")" && pwd)/../lib/gitcmds.sh"
+source "$CLI_TOOL_ROOT/lib/gitcmds.sh"
 
 gitrefresh "$1"

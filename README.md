@@ -1,6 +1,6 @@
 # cli-tools
 
-Personal shell utilities for git branch hygiene, GPG cache warming, and Claude plugin static analysis.
+Personal shell utilities for git branch hygiene, GPG cache warming, video conversion, and Claude plugin static analysis.
 
 ## Installation
 
@@ -52,9 +52,17 @@ Warms the GPG agent cache by performing a throwaway clearsign. Useful to pre-unl
 cache-gpg
 ```
 
-### `sast`
+### `convert-video [file]`
 
-Static analysis for Claude plugin markdown files. Scans `plugins/` for risky `allowed-tools` declarations in YAML frontmatter.
+Converts a video file to H.264/AAC MP4 using ffmpeg. Output is written alongside the input with a `.mp4` extension. Requires `ffmpeg`.
+
+```sh
+convert-video input.mov
+```
+
+### `sast [plugins-dir]`
+
+Static analysis for Claude plugin markdown files. Scans `plugins/` (default: `./plugins`) for risky `allowed-tools` declarations in YAML frontmatter.
 
 | Severity | Check |
 |----------|-------|
@@ -63,7 +71,8 @@ Static analysis for Claude plugin markdown files. Scans `plugins/` for risky `al
 | WARN | Bare `WebFetch` — any domain fetchable |
 
 ```sh
-sast
+sast                        # scans ./plugins
+sast /path/to/plugins       # scans a specific directory
 ```
 
 Exits non-zero if any ERROR findings are found.
@@ -72,12 +81,16 @@ Exits non-zero if any ERROR findings are found.
 
 ```
 bin/
-  cache-gpg     # warms GPG agent cache
-  gitprune      # wrapper for gitprune()
-  gitrefresh    # wrapper for gitrefresh()
-  sast          # static analysis for claude plugin frontmatter
+  _bootstrap      # resolves CLI_TOOL_ROOT; sourced by all bin scripts
+  cache-gpg       # warms GPG agent cache
+  convert-video   # wrapper for convert_vid()
+  gitprune        # wrapper for gitprune()
+  gitrefresh      # wrapper for gitrefresh()
+  sast            # static analysis for claude plugin frontmatter
 lib/
-  gitcmds.sh    # shared function definitions
+  common.sh       # shared color vars, gecho, show_progress
+  ffmpegcmds.sh   # convert_vid() implementation
+  gitcmds.sh      # gitprune() and gitrefresh() implementations
 ```
 
 ## License

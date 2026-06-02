@@ -1,8 +1,10 @@
 #!/bin/bash
 set -euo pipefail
 
-REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-PLUGINS_DIR="${1:-$REPO_ROOT/plugins}"
+# shellcheck source=bin/_bootstrap
+source "${BASH_SOURCE[0]%/*}/_bootstrap"
+
+PLUGINS_DIR="${1:-$(pwd)/plugins}"
 
 FINDINGS=0
 EXIT_CODE=0
@@ -22,7 +24,7 @@ while IFS= read -r file; do
   tools_line=$(awk '/^---/{f=!f; next} f && /^allowed-tools:/' "$file" | head -1)
   [[ -z "$tools_line" ]] && continue
 
-  rel="${file#"$REPO_ROOT"/}"
+  rel="${file#"$(pwd)"/}"
 
   # Bare Bash (no constraint) — allows any shell command
   if echo "$tools_line" | grep -qE '\bBash\b[^(]|Bash\s*\]|Bash\s*,'; then
