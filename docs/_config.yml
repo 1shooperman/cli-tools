@@ -1,0 +1,18 @@
+title: cli-tools
+description: Personal shell utilities for git hygiene, GPG, video conversion, and Claude plugin static analysis.
+remote_theme: just-the-docs/just-the-docs@v0.10.1
+url: https://1shooperman.github.io
+baseurl: /cli-tools
+
+# Nav order for top-level pages
+nav_order_default: 1
+
+plugins:
+  - jekyll-remote-theme
+
+# Just the Docs config
+search_enabled: true
+heading_anchors: true
+color_scheme: dark
+
+footer_content: "MIT License &mdash; <a href=\"https://github.com/1shooperman/cli-tools\">1shooperman/cli-tools</a>"
