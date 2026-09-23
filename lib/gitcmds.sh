@@ -7,9 +7,9 @@ gitprune() {
 
     if [[ "$1" == "--force" ]]; then
         gecho "Force deleting unmerged branches"
-        git branch -r | awk '{print $1}' | grep -Ev -f /dev/fd/0 <(git branch -vv | grep origin) | awk '{print $1}' | xargs -r git branch -D
+        git branch -r | awk '{print $1}' | grep -Ev -f /dev/fd/0 <(git branch -vv | grep origin) | awk '{print ($1=="*"||$1=="+")?$2:$1}' | xargs -r git branch -D
     else
-        git branch -r | awk '{print $1}' | grep -Ev -f /dev/fd/0 <(git branch -vv | grep origin) | awk '{print $1}' | xargs -r git branch -d
+        git branch -r | awk '{print $1}' | grep -Ev -f /dev/fd/0 <(git branch -vv | grep origin) | awk '{print ($1=="*"||$1=="+")?$2:$1}' | xargs -r git branch -d
     fi
 
     { git gc --prune=now && git fetch -p; } 2>&1 | show_progress
